@@ -117,3 +117,100 @@ int main() {
 
     return 0;
 }
+#include <iostream>
+
+template <class T>
+class Node {
+public:
+    T data;
+    Node* prev;
+    Node* next;
+
+    Node(T data) {
+        this->data = data;
+        this->prev = nullptr;
+        this->next = nullptr;
+    }
+};
+
+template <class T>
+class DoublyLinkedList {
+private:
+    Node<T>* head;
+    Node<T>* tail;
+
+public:
+    DoublyLinkedList() {
+        this->head = nullptr;
+        this->tail = nullptr;
+    }
+
+    void addFront(T data) {
+        Node<T>* newNode = new Node<T>(data);
+        if (!head) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            newNode->next = head;
+            head->prev = newNode;
+            head = newNode;
+        }
+    }
+
+    void addBack(T data) {
+        Node<T>* newNode = new Node<T>(data);
+        if (!tail) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            newNode->prev = tail;
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    void remove(Node<T>* node) {
+        if (node->prev) {
+            node->prev->next = node->next;
+        } else {
+            head = node->next;
+        }
+        if (node->next) {
+            node->next->prev = node->prev;
+        } else {
+            tail = node->prev;
+        }
+        delete node;
+    }
+
+    void printList() {
+        Node<T>* current = head;
+        while (current) {
+            std::cout << current->data << " ";
+            current = current->next;
+        }
+        std::cout << std::endl;
+    }
+};
+
+int main() {
+    DoublyLinkedList<int> list;
+    int E;
+    std::cout<< "Введите E, которое нужно вставить" << std::endl;
+    std::cin>> E;
+    
+    list.addFront(1);
+    list.addBack(2);
+    list.addBack(3);
+    list.addBack(4);
+    list.addBack(5);
+    list.addBack(7);
+    list.addBack(E);
+    list.addFront(E);
+    
+
+    list.printList();
+
+    return 0;
+}
+
