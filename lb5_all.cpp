@@ -1,10 +1,10 @@
-
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <algorithm>
 #include <sstream>
 #include <climits>
+
 
 struct Toy {
     std::string name;
@@ -15,11 +15,11 @@ struct Toy {
 
 class FileManipulator {
 public:
-    
+    //генерация файла с рандомными числами
     static void generateRandomIntegersFile(const std::string& filename, int count) {
         std::ofstream file(filename, std::ios::binary);
         for (int i = 0; i < count; i++) {
-            int num = rand() % 100; // Generate random number between 0 and 99
+            int num = rand() % 10; //генерирует рандомные числа под инт
             file.write(reinterpret_cast<const char *>(&num), sizeof(num));
         }
         file.close();
