@@ -1,167 +1,263 @@
-#include <iostream>
+#include <clocale>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <fstream>
-#include <vector>
-#include <algorithm>
+#include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 #include <climits>
 
 
 struct Toy {
-    std::string name;
-    int cost;
-    int min_age;
-    int max_age;
+  char type[32] = "type";
+  char name[32] = "name";
+  int price = 1;
+  int min_age = 0;
+  int max_age = 99;
 };
 
-class FileManipulator {
+class WorkFile {
 public:
-    //генерация файла с рандомными числами
-    static void generateRandomIntegersFile(const std::string& filename, int count) {
-        std::ofstream file(filename, std::ios::binary);
-        for (int i = 0; i < count; i++) {
-            int num = rand() % 10; //генерирует рандомные числа под инт
-            file.write(reinterpret_cast<const char *>(&num), sizeof(num));
-        }
-        file.close();
+    static void RandomFillFile(const std::string& filename, int count,int minimal_number, int maximum_number) {
+
+    if (minimal_number > maximum_number) {
+      minimal_number = 1;
+      maximum_number = 9;
+    }
+    if (count <= 0)
+      count = 10;
+
+    std::ofstream file(filename, std::ios::binary);
+
+    static bool flag = false;
+    if (!flag) {
+      std::srand(static_cast<unsigned int>(std::time(0)));
+      flag = true;
     }
 
-    static void generateToyFile(const std::string& filename, const std::vector<Toy>& toys) {
-        std::ofstream file(filename, std::ios::binary);
-        for (const Toy& toy : toys) {
-            file.write(toy.name.c_str(), toy.name.size() + 1); // Include null terminator
-            file.write(reinterpret_cast<const char *>(&toy.cost), sizeof(toy.cost));
-            file.write(reinterpret_cast<const char *>(&toy.min_age), sizeof(toy.min_age));
-            file.write(reinterpret_cast<const char *>(&toy.max_age), sizeof(toy.max_age));
-        }
-        file.close();
+    for (int i = 0; i < count; i++) {
+      int random = (minimal_number) + (rand() % (maximum_number - minimal_number + 1));
+      std::cout << random << ' ';
+      file.write(reinterpret_cast<char *>(&random), sizeof(int));
+    }
+    std::cout << '\n';
+    file.close();
+  }
+
+    static void CopyFile(const std::string &input_file,const std::string &output_file) {
+        std::ifstream input(input_file, std::ios::binary);
+        std::ofstream output(output_file, std::ios::binary);
+    std::vector<int> nums;
+    int num;
+    while (input.read(reinterpret_cast<char *>(&num), sizeof(int))) {
+        nums.push_back(num);
     }
 
-    static void createNewFileRule1(const std::string& inputFile, const std::string& outputFile) {
-        std::ifstream input(inputFile, std::ios::binary);
-        std::ofstream output(outputFile, std::ios::binary);
+    for (int i = 1; i <= nums.size(); ++i) {
+        for (int j = 0; j < i; ++j) {
+            output.write(reinterpret_cast<char *>(&nums[j]), sizeof(int));
+        }
+    }
 
+input.close();
+output.close();
+
+}
+
+  static void ViewFile(const std::string &input_file) {
+    std::ifstream input(input_file, std::ios::binary);
+
+    int num;
+    while (input.read(reinterpret_cast<char *>(&num), sizeof(int)))
+      std::cout << num << ' ';
+    input.close();
+    std::cout << '\n' << '\n';
+  }
+
+  static std::vector<std::vector<int>> 
+  ReadMatrix(const std::string &input_file, int k) {
+    std::ifstream input(input_file, std::ios::binary);
+    std::vector<std::vector<int>> arr(k, std::vector<int>(k, 0));
+    int num;
+    int count = 0;
+    while (input.read(reinterpret_cast<char *>(&num), sizeof(int)) &&
+           count < k * k) {
+      arr[count / k][count % k] = num;
+      count++;
+    }
+    input.close();
+    return arr;
+  }
+
+  static int MinRows(std::vector<std::vector<int>> &arr) {
+    int k = arr.size();
+    if (!k)
+      return 0;
+    int ind, min_sum;
+
+    for (int i = 0; i < k; i++) {
+      int sum = 0;
+
+      for (int j = 0; j < k; j++) {
+        sum += arr[i][j];
+      }
+
+      if (!i) {
+        min_sum = sum;
+        ind = 0;
+      }
+      if (std::abs(sum) < std::abs(min_sum)) {
+        min_sum = sum;
+        ind = i;
+      }
+    }
+    return ind;
+  }
+
+  static void ViewMatrix(std::vector<std::vector<int>> &arr) {
+    for (const auto &row : arr) {
+      for (int num : row)
+        std::cout << num << ' ';
+      std::cout << '\n';
+    }
+    std::cout << '\n';
+  }
+
+  static void RandomFillFileTXT(const std::string &output_file, int count,
+                                int minimal_number, int maximum_number) {
+    std::ofstream output(output_file);
+
+    static bool flag = false;
+    if (!flag) {
+      std::srand(static_cast<unsigned int>(std::time(0)));
+      flag = true;
+    }
+
+    for (int i = 0; i < count; i++) {
+      output << minimal_number +
+                    (rand() % (maximum_number - minimal_number + 1))
+             << '\n';
+    }
+    output.close();
+  }
+
+  static long long ProductMinMaxNumFileTXT(const std::string &input_file) {
+    std::ifstream input(input_file);
+    int min = INT_MAX;
+    int max = INT_MIN;
+    int num; 
+    while (input >> num) {
+    if (num < min) {
+        min = num;
+    }
+    if (num > max) {
+        max = num;
+    }
+}
+
+    input.close();
+    return static_cast<long long>(min) * static_cast<long long>(max);
+}
+
+  static void RandomFillFileTXTLines(const std::string &output_file, int count,
+                                     int minimal_number, int maximum_number,
+                                     int columns_count) {
+    std::ofstream output(output_file);
+
+    static bool flag = false;
+    if (!flag) {
+      std::srand(static_cast<unsigned int>(std::time(0)));
+      flag = true;
+    }
+
+    for (int i = 0; i < count; i++)
+      for (int j = 0; j < columns_count; j++) {
+        output << minimal_number +
+                      (rand() % (maximum_number - minimal_number + 1));
+        if (j != columns_count - 1)
+          output << ' ';
+      }
+    output << '\n';
+    output.close();
+  }
+
+  static long long ProductNumbersTXT(const std::string &input_file, int k) {
+    std::ifstream input(input_file);
+
+    int count = 0;
+    std::string line;
+    while (std::getline(input, line)) {
+        std::stringstream str_stream(line);
         int num;
-        while (input.read(reinterpret_cast<char *>(&num), sizeof(num))) {
-            output.write(reinterpret_cast<const char *>(&num), sizeof(num));
-            output.write(reinterpret_cast<const char *>(&num), sizeof(num));
-
-            int nextNum;
-            while (input.peek() != EOF) {
-                input.read(reinterpret_cast<char *>(&nextNum), sizeof(nextNum));
-                output.write(reinterpret_cast<const char *>(&nextNum), sizeof(nextNum));
-            }
-        }
-
-        input.close();
-        output.close();
-    }
-
-    static void copyFileToMatrix(const std::string& inputFile, int n) {
-        std::ifstream input(inputFile, std::ios::binary);
-        std::vector<std::vector<int>> matrix(n, std::vector<int>(n, 0));
-
-        int num;
-        int row = 0, col = 0;
-        while (input.read(reinterpret_cast<char *>(&num), sizeof(num))) {
-            matrix[row][col] = num;
-            col++;
-            if (col == n) {
-                col = 0;
-                row++;
-                if (row == n) break;
-            }
-        }
-
-        input.close();
-
-        int closestRow = 0;
-        int closestSum = std::abs(matrix[0][0]);
-        for (int i = 1; i < n; i++) {
-            int rowSum = 0;
-            for (int j = 0; j < n; j++) {
-                rowSum += matrix[i][j];
-            }
-            if (std::abs(rowSum) < closestSum) {
-                closestRow = i;
-                closestSum = std::abs(rowSum);
-            }
-        }
-
-        std::cout << "Row with sum closest to zero: " << closestRow << std::endl;
-    }
-
-    static void findToysForAges(const std::string& inputFile, int minAge, int maxAge) {
-        std::ifstream input(inputFile, std::ios::binary);
-
-        std::vector<std::string> suitableToys;
-
-        Toy toy;
-        while (input.read(reinterpret_cast<char *>(&toy), sizeof(Toy))) {
-            if (toy.min_age <= minAge && toy.max_age >= maxAge) {
-                suitableToys.push_back(toy.name);
-            }
-        }
-
-        input.close();
-
-        std::cout << "Toys suitable for children aged " << minAge << " to " << maxAge << ":" << std::endl;
-        for (const std::string& name : suitableToys) {
-            std::cout << name << std::endl;
-        }
-    }
-
-    static void findMinMaxProduct(const std::string& inputFile) {
-        std::ifstream input(inputFile);
-        int min = INT_MAX;
-        int max = INT_MIN;
-
-        int num;
-        while (input >> num) {
-            min = std::min(min, num);
-            max = std::max(max, num);
-        }
-
-        input.close();
-
-        std::cout << "Product of min and max elements: " << min * max << std::endl;
-    }
-
-    static void countOddElements(const std::string& inputFile) {
-        std::ifstream input(inputFile);
-
-        int num;
-        int count = 0;
-        while (input >> num) {
+        while (str_stream >> num) {
             if (num % 2 != 0) {
                 count++;
-            }
         }
-
-        input.close();
-
-        std::cout << "Number of odd elements: " << count << std::endl;
     }
+}
+input.close();
+return count;
+}
+  static void NoRussianText(const std::string &input_file,
+                            const std::string &output_file) {
+    std::ifstream input(input_file);
+    std::ofstream output(output_file);
+    std::string line;
+    while (std::getline(input, line)) {
+      std::stringstream str_stream(line);
+      std::string temp;
+      int count = 0;
+      while (str_stream >> temp) {
+        for (int i = 0; i< temp.size()/2;i++){
+            count++;
+            
+            }
+        count++;
+        }
+        
+        output << count - 1 << '\n';
+    }
+    input.close();
+    output.close();
+  
+}
 };
 
 int main() {
-    FileManipulator::generateRandomIntegersFile("random_numbers.bin", 10);
 
-    std::vector<Toy> toys = {
-            { "Teddy Bear", 15, 1, 5 },
-            { "Lego Set", 25, 3, 12 },
-            { "Dollhouse", 40, 4, 10 }
-    };
-    FileManipulator::generateToyFile("toys.bin", toys);
+  std::cout << "задание 1\n";
 
-    FileManipulator::createNewFileRule1("random_numbers.bin", "output1.bin");
+  WorkFile::RandomFillFile("gg.bin", 10, 1, 9);
+  WorkFile::CopyFile("gg.bin", "Lox.bin");
+  std::cout << "Все элементы созданного файла: ";
+  WorkFile::ViewFile("gg.bin");
+  WorkFile::ViewFile("Lox.bin");
+  std::cout << '\n';
 
-    FileManipulator::copyFileToMatrix("random_numbers.bin", 3);
+  std::cout << "задание 2\n";
 
-    FileManipulator::findToysForAges("toys.bin", 4, 10);
+  int k = 4;
+  WorkFile::RandomFillFile("matrix.bin", k * k, 1, 12);
+  std::vector<std::vector<int>> arr = WorkFile::ReadMatrix("matrix.bin", k);
+  std::cout << "Изначальная матрица: \n";
+  WorkFile::ViewMatrix(arr);
+  std::cout<<"Строка сумма которой ближе к нулю: "<< WorkFile::MinRows(arr)+1<<'\n';
+  
 
-    FileManipulator::findMinMaxProduct("random_numbers.bin");
+  std::cout << "задание 4\n";
+  WorkFile::RandomFillFileTXT("out.txt", 20, 1, 20);
+  std::cout << "Произведение наибольшего и наимееньшего элементов"
+            << WorkFile::ProductMinMaxNumFileTXT("out.txt") << '\n';
 
-    FileManipulator::countOddElements("random_numbers.bin");
+  std::cout << "задание 5\n";
+  k = 3;
+  WorkFile::RandomFillFileTXTLines("out_line.txt", 20, 1, 10, k);
+  std::cout << "Произведение элементов кратных " << k << " ^ "
+            << WorkFile::ProductNumbersTXT("out_line.txt", 3) << '\n';
 
-    return 0;
+  setlocale(LC_ALL, "Russian");
+  WorkFile::NoRussianText("tt.txt", "no_rus.txt");
+  return 0;
 }
