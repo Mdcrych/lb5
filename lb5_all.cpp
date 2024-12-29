@@ -10,14 +10,6 @@
 #include <climits>
 
 
-struct Toy {
-  char type[32] = "type";
-  char name[32] = "name";
-  int price = 1;
-  int min_age = 0;
-  int max_age = 99;
-};
-
 class WorkFile {
 public:
     static void RandBinFile(const std::string& filename, int count,int minimal_number, int maximum_number) {
