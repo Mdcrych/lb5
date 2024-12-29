@@ -192,7 +192,7 @@ output.close();
 input.close();
 return count;
 }
-  static void Lettersinline(const std::string &input_file,
+  static void LettersInLine(const std::string &input_file,
                             const std::string &output_file) {
     std::ifstream input(input_file);
     std::ofstream output(output_file);
@@ -249,6 +249,6 @@ int main() {
   std::cout << "Количеество нечетных элемееентов - " 
             << WorkFile::OddNumbersTXT("output_line.txt") << '\n';
 
-  WorkFile::Lettersinline("textlines.txt", "numofletters.txt");
+  WorkFile::LettersInLine("textlines.txt", "numofletters.txt");
   return 0;
 }
