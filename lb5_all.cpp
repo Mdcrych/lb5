@@ -20,7 +20,7 @@ struct Toy {
 
 class WorkFile {
 public:
-    static void RandomFillFile(const std::string& filename, int count,int minimal_number, int maximum_number) {
+    static void RandBinFile(const std::string& filename, int count,int minimal_number, int maximum_number) {
 
     if (minimal_number > maximum_number) {
       minimal_number = 1;
@@ -125,7 +125,7 @@ output.close();
     std::cout << '\n';
   }
 
-  static void RandomFillFileTXT(const std::string &output_file, int count,
+  static void RandomTXTFile(const std::string &output_file, int count,
                                 int minimal_number, int maximum_number) {
     std::ofstream output(output_file);
 
@@ -143,7 +143,7 @@ output.close();
     output.close();
   }
 
-  static long long ProductMinMaxNumFileTXT(const std::string &input_file) {
+  static long long ProductMinMaxTXT(const std::string &input_file) {
     std::ifstream input(input_file);
     int min = INT_MAX;
     int max = INT_MIN;
@@ -161,7 +161,7 @@ output.close();
     return static_cast<long long>(min) * static_cast<long long>(max);
 }
 
-  static void RandomFillFileTXTLines(const std::string &output_file, int count,
+  static void RandomTXTLinesFile(const std::string &output_file, int count,
                                      int minimal_number, int maximum_number,
                                      int columns_count) {
     std::ofstream output(output_file);
@@ -183,7 +183,7 @@ output.close();
     output.close();
   }
 
-  static long long ProductNumbersTXT(const std::string &input_file, int k) {
+  static long long OddNumbersTXT(const std::string &input_file) {
     std::ifstream input(input_file);
 
     int count = 0;
@@ -200,7 +200,7 @@ output.close();
 input.close();
 return count;
 }
-  static void NoRussianText(const std::string &input_file,
+  static void Lettersinline(const std::string &input_file,
                             const std::string &output_file) {
     std::ifstream input(input_file);
     std::ofstream output(output_file);
@@ -229,35 +229,34 @@ int main() {
 
   std::cout << "задание 1\n";
 
-  WorkFile::RandomFillFile("gg.bin", 10, 1, 9);
-  WorkFile::CopyFile("gg.bin", "Lox.bin");
+  WorkFile::RandBinFile("input.bin", 10, 1, 9);
+  WorkFile::CopyFile("input.bin", "output.bin");
   std::cout << "Все элементы созданного файла: ";
-  WorkFile::ViewFile("gg.bin");
-  WorkFile::ViewFile("Lox.bin");
+  WorkFile::ViewFile("input.bin");
+  WorkFile::ViewFile("output.bin");
   std::cout << '\n';
 
   std::cout << "задание 2\n";
 
   int k = 4;
-  WorkFile::RandomFillFile("matrix.bin", k * k, 1, 12);
+  WorkFile::RandBinFile("matrix.bin", k * k, 1, 12);
   std::vector<std::vector<int>> arr = WorkFile::ReadMatrix("matrix.bin", k);
-  std::cout << "Изначальная матрица: \n";
+  std::cout << "Сгенерированная матрица: \n";
   WorkFile::ViewMatrix(arr);
-  std::cout<<"Строка сумма которой ближе к нулю: "<< WorkFile::MinRows(arr)+1<<'\n';
+  std::cout<<"Строка, сумма которой ближе к нулю: "<< WorkFile::MinRows(arr)+1<<"\n";
   
 
   std::cout << "задание 4\n";
-  WorkFile::RandomFillFileTXT("out.txt", 20, 1, 20);
+  WorkFile::RandomTXTFile("output.txt", 20, 1, 20);
   std::cout << "Произведение наибольшего и наимееньшего элементов"
-            << WorkFile::ProductMinMaxNumFileTXT("out.txt") << '\n';
+            << WorkFile::ProductMinMaxTXT("output.txt") << '\n';
 
   std::cout << "задание 5\n";
   k = 3;
-  WorkFile::RandomFillFileTXTLines("out_line.txt", 20, 1, 10, k);
-  std::cout << "Произведение элементов кратных " << k << " ^ "
-            << WorkFile::ProductNumbersTXT("out_line.txt", 3) << '\n';
+  WorkFile::RandomTXTLinesFile("output_line.txt", 20, 1, 10, 3);
+  std::cout << "Количеество нечетных элемееентов - " 
+            << WorkFile::OddNumbersTXT("output_line.txt") << '\n';
 
-  setlocale(LC_ALL, "Russian");
-  WorkFile::NoRussianText("tt.txt", "no_rus.txt");
+  WorkFile::Lettersinline("textlines.txt", "numofletters.txt");
   return 0;
 }
